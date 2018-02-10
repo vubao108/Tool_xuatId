@@ -16,12 +16,14 @@ namespace XuatBangId_Danang_Haiphong
         
         
         DataGridViewCheckBoxColumn dgvCmb2;
+        DataGridViewCheckBoxColumn dgvCmb_ketqua;
         
         public Form1()
         {
             InitializeComponent();
             LoadDataGridView01();
             LoadDataGridView02(null, null);
+            LoadDataGridViewKetQua();
         }
 
        
@@ -49,6 +51,19 @@ namespace XuatBangId_Danang_Haiphong
             }
              dataGridView2.DataSource = DAO.GetDataSource.GetTable02(_idkhach, _hoten);
             
+        }
+        private void LoadDataGridViewKetQua()
+        {
+            if (dgvCmb_ketqua == null)
+            {
+                dgvCmb_ketqua = new DataGridViewCheckBoxColumn();
+                dgvCmb_ketqua.ValueType = typeof(bool);
+                dgvCmb_ketqua.Name = "Chk";
+                dgvCmb_ketqua.HeaderText = "Chọn";
+                dataGridView_ketqua.Columns.Add(dgvCmb_ketqua);
+            }
+            dataGridView_ketqua.DataSource = DAO.GetDataSource.GetTable_ketqua();
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -80,8 +95,22 @@ namespace XuatBangId_Danang_Haiphong
                 }
             }
 
-            LoadDataGridView01();
-            LoadDataGridView02(null, null);
+            if (id_khach01 != null && id_khach02 != null && id_khach01 == id_khach02)
+            {
+                DAO.GetDataSource.Update_dachon_01(id_01);
+                DAO.GetDataSource.Update_dachon_02(id_02);
+                DAO.GetDataSource.Insert_id(id_khach01, id_khach02, id_01, id_02);
+
+
+
+                LoadDataGridView01();
+                LoadDataGridView02(null, null);
+                LoadDataGridViewKetQua();
+            }
+            else
+            {
+                MessageBox.Show("Có lỗi khi chọn, hãy chọn lại !!!");
+            }
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -99,6 +128,10 @@ namespace XuatBangId_Danang_Haiphong
                     }
                     dataGridView1.CurrentRow.Cells["Chk"].Value = true;
                     id_khach01 = dataGridView1.CurrentRow.Cells["id_khach"].Value.ToString();
+                }
+                else
+                {
+                    dataGridView1.CurrentRow.Cells["Chk"].Value = null;
                 }
                 LoadDataGridView02(id_khach01, null);
             }
